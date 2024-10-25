@@ -1,14 +1,19 @@
-// src/App.js
-import React from 'react';
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Register from './Register';
+import Login from './Login';
+import Profile from './Profile';
 
 const App = () => {
   return (
-    <div>
-      <Register /> 
-    </div>
+  
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/profile" element={<Profile />} />
+        </Routes>
+      
   );
 };
 
 export default App;
-
