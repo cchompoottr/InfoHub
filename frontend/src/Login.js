@@ -1,20 +1,37 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-const Login = () => {
-    return (
 
+const Login = () => {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        console.log('Email:', email);
+        console.log('Password:', password);
+    };
+
+    return (
     <div className='flex items-center justify-center w-full h-screen bg-gray-200'
     style={{ backgroundImage: 'url(/login_screen.png)', backgroundSize: 'cover', backgroundPosition: 'center' }}
     >
-        <div className='flex flex-col items-center justify-center bg-white p-10'>
+        <form onSubmit={handleSubmit} className='flex flex-col items-center justify-center bg-white p-10'>
             <img src="/Microsoft_logo.png" alt="Microsoft Logo" className="mt-5 mb-10 w-[120px] h-auto"/>
             <h2 className="text-4xl font-bold mb-2">ลงชื่อเข้าใช้</h2>
             <p className='mb-10 text-inherit'>ใช้บัญชี Microsoft ของคุณ</p>
              {/* อีเมล */}
             <div class="sm:col-span-6">
                 <div class="mt-2 w-[350px]">
-                    <input id="email" name="email" type="email" autocomplete="email" placeholder=" someone@example.com" className="block w-full border-[1.25px] border-slate-500 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
+                    <input 
+                    id="email" 
+                    name="email" 
+                    type="email" 
+                    autocomplete="email" 
+                    placeholder=" someone@example.com" 
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="block w-full border-[1.25px] border-slate-500 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
                 </div>
             </div>
             {/* รหัสผ่าน */}
@@ -26,6 +43,8 @@ const Login = () => {
                         type="password"
                         autoComplete="current-password" 
                         placeholder=" รหัสผ่าน"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                         className="block w-full border-[1.25px] border-slate-500 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     />
                 </div>
@@ -38,9 +57,9 @@ const Login = () => {
                 ลงชื่อเข้าใช้
             </button>
             <p className='mb-5'>ยังไม่มีบัญชีหรอ
-                <a href="/register" className='text-blue-600'> สร้างได้เลย</a>
+                <Link to="/register" className='text-blue-600'> สร้างได้เลย</Link>
             </p>
-        </div>
+        </form>
     </div>
     );
 };

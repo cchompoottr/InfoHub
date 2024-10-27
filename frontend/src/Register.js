@@ -1,14 +1,73 @@
+//register
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+
 
 const Register = () => {
-  const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    password: '',
-  });
+    const navigate = useNavigate();
+    const [formData, setFormData] = useState({
+      firstName: '',
+      lastName: '',
+      email: '',
+      password: '',
+      phone: '',
+      birthDay: '',
+      birthMonth: '',
+      birthYear: '',
+      gender: '',
+ 
+    });
 
+    const [loading, setLoading] = useState(false); // สถานะการโหลด
+    const [error, setError] = useState(null); // สถานะข้อผิดพลาด
 
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData((prevData) => ({
+            ...prevData,
+            [name]: value,
+          }));
+        };
+    
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        setError(null);
+
+        console.log(formData);
+        
+        try {
+            const response = await fetch('http://localhost:5001/api/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    firstName: formData.firstName,
+                    lastName: formData.lastName,
+                    email: formData.email,
+                    password: formData.password,
+                    phone: formData.phone,
+                    birthDay: formData.birthDay,
+                    birthMonth: formData.birthMonth,
+                    birthYear: formData.birthYear,
+                    gender: formData.gender,
+
+                }),
+            });
+
+            if (response.ok) {
+                navigate('/profile'); // ไปยังหน้าโปรไฟล์หลังจากสมัครสมาชิกสำเร็จ
+            } else {
+                const errorData = await response.json();
+                setError(errorData.message || 'Registration failed'); // จัดการข้อผิดพลาด
+            }
+        } catch (error) {
+            setError('Error: ' + error.message);
+        } finally {
+            setLoading(false); // สิ้นสุดการโหลด
+        }
+    };
 
   return (
 <div className='flex items-center justify-center w-full'>
@@ -23,26 +82,26 @@ const Register = () => {
         </p>
 
         
-    <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 w-3/4">
+    <form onSubmit={handleSubmit} className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 w-3/4">
         {/* ชื่อจริง */}
-        <div class="sm:col-span-3">
-          <label for="first-name" class="block text-sm font-medium leading-6 text-gray-900">ชื่อจริง</label>
-          <div class="mt-2">
-            <input type="text" name="first-name" id="first-name" autocomplete="given-name" class="block w-full border-[1.25px] border-slate-500 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
+        <div className="sm:col-span-3">
+          <label htmlFor="firstName" className="block text-sm font-medium leading-6 text-gray-900">ชื่อจริง</label>
+          <div className="mt-2">
+            <input type="text" name="firstName" id="firstName" autoComplete="given-name" value={formData.firstName} onChange={handleChange} className="block w-full border-[1.25px] border-slate-500 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" required/>
           </div>
         </div>
         {/* นามสกุล */}
-        <div class="sm:col-span-3">
-          <label for="last-name" class="block text-sm font-medium leading-6 text-gray-900">นามสกุล</label>
-          <div class="mt-2">
-            <input type="text" name="last-name" id="last-name" autocomplete="family-name" class="block w-full border-[1.25px] border-slate-500 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
+        <div className="sm:col-span-3">
+          <label htmlFor="lastName" className="block text-sm font-medium leading-6 text-gray-900">นามสกุล</label>
+          <div className="mt-2">
+            <input type="text" name="lastName" id="lastName" autoComplete="family-name" value={formData.lastName} onChange={handleChange}  className="block w-full border-[1.25px] border-slate-500 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" required/>
           </div>
         </div>
         {/* ชื่อผู้ใช้ */}
-        <div class="sm:col-span-6">
-          <label for="email" class="block text-sm font-medium leading-6 text-gray-900">ชื่อผู้ใช้</label>
-          <div class="mt-2">
-            <input id="email" name="email" type="email" autocomplete="email" placeholder=" อีเมลใหม่" className="block w-full border-[1.25px] border-slate-500 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
+        <div className="sm:col-span-6">
+          <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">ชื่อผู้ใช้</label>
+          <div className="mt-2">
+            <input id="email" name="email" type="email" autoComplete="email" placeholder=" อีเมลใหม่" value={formData.email} onChange={handleChange}  className="block w-full border-[1.25px] border-slate-500 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" required/>
           </div>
         </div>
         {/* รหัสผ่าน */}
@@ -55,30 +114,20 @@ const Register = () => {
                     name="password" 
                     autoComplete="new-password" 
                     placeholder="" 
+                    value={formData.password} 
+                    onChange={handleChange} 
                     className="w-[800px] block border-[1.25px] border-slate-500 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    required
                 />
             </div>
             <p className="mt-1 text-sm text-gray-500">อย่างน้อย 8 ตัวอักษรและตัวพิมพ์ใหญ่-เล็กต้องตรงกัน</p>
         </div>
-        {/* คอนเฟิร์มรหัสผ่าน */}
-        <div className="sm:col-span-6">
-            <label htmlFor="confirm-password" className="block text-sm font-medium leading-6 text-gray-900">ป้อนรหัสผ่านอีกครั้ง</label>
-            <div className="mt-2">
-                <input 
-                    type="password" 
-                    id="confirm-password" 
-                    name="confirm-password" 
-                    autoComplete="new-password" 
-                    placeholder="" 
-                    className="w-[800px] block border-[1.25px] border-slate-500 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                />
-            </div>
-        </div>
+
         {/* ประเทศ */}
-        <div class="sm:col-span-6">
-          <label for="country" class="block text-sm font-medium leading-6 text-gray-900">ประเทศ/ภูมิภาค</label>
-          <div class="mt-2">
-            <select id="country" name="country" autocomplete="country-name" class="w-[800px] block border-[1.25px] border-slate-500 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+        <div className="sm:col-span-6">
+          <label htmlFor="country" className="block text-sm font-medium leading-6 text-gray-900">ประเทศ/ภูมิภาค</label>
+          <div className="mt-2">
+            <select id="country" name="country" autoComplete="country-name" value={formData.country} onChange={handleChange} className="w-[800px] block border-[1.25px] border-slate-500 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
               <option>Thailand</option>
             </select>
           </div>
@@ -86,13 +135,16 @@ const Register = () => {
         {/* วัน เดือน ปีเกิด */}
         <div className="sm:flex space-x-4 w-[800px]"> 
             <div className="flex-1">
-                <label htmlFor="birth-day" className="block text-sm font-medium leading-6 text-gray-900">วันเกิด</label> 
+                <label htmlFor="birthDay" className="block text-sm font-medium leading-6 text-gray-900">วันเกิด</label> 
                 <div className="mt-2">
                     <select 
-                        name="birth-day" 
-                        id="birth-day" 
+                        name="birthDay" 
+                        id="birthDay" 
+                        autoComplete="birth-day"
                         className="block w-full border-[1.25px] border-slate-500 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 placeholder:text-gray-400"
-                        defaultValue="" 
+                        value={formData.birthDay} 
+                        onChange={handleChange} 
+                        required
                     >
                         <option value="" disabled>วันที่</option>
                         {[...Array(31)].map((_, index) => (
@@ -107,10 +159,13 @@ const Register = () => {
             <div className="flex-1">
                 <div className="mt-8">
                     <select 
-                        name="birth-month" 
-                        id="birth-month" 
+                        name="birthMonth" 
+                        id="birthMonth" 
+                        autoComplete="birthMonth"
                         className="block w-full border-[1.25px] border-slate-500 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                        defaultValue="" 
+                        value={formData.birthMonth} 
+                        onChange={handleChange} 
+                        required
                     >
                         <option value="" disabled>เดือน</option>
                         {[
@@ -129,10 +184,13 @@ const Register = () => {
             <div className="flex-1">
                 <div className="mt-8">
                     <select 
-                        name="birth-year" 
-                        id="birth-year" 
+                        name="birthYear" 
+                        id="birthYear" 
+                        autoComplete="birthYear"
                         className="block w-full border-[1.25px] border-slate-500 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                        defaultValue="" 
+                        value={formData.birthYear} 
+                        onChange={handleChange} 
+                        required
                     >
                         <option value="" disabled>ปี</option>
                         {[...Array(100)].map((_, index) => (
@@ -153,7 +211,9 @@ const Register = () => {
                     name="gender" 
                     autoComplete="gender" 
                     className="w-[800px] block border-[1.25px] border-slate-500 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 placeholder:text-gray-400"
-                    defaultValue=""  
+                    value={formData.gender} 
+                    onChange={handleChange}
+                    required
                 >
                     <option value="" disabled>เลือก...</option> 
                     <option value="male">ชาย</option>
@@ -187,18 +247,24 @@ const Register = () => {
                     id="phone" 
                     name="phone" 
                     autoComplete="tel" 
+                    value={formData.phone} 
+                    onChange={handleChange} 
                     className="w-[800px] block border-[1.25px] border-slate-500 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    required
                 />
             </div>
         </div>
-    </div>
+    </form>
     <p className='mt-10'>การคลิก<b>สร้างบัญชี</b>หมายความว่าคุณยอมรับ<span className='text-blue-600'>ข้อตกลงการใช้บริการของ Microsoft</span>และ<span className='text-blue-600'>คำชี้แจงสิทธิส่วนบุคคลและคุกกี้</span></p>
     <div className="sm:col-span-6">
         <button 
             type="submit" 
+            onClick={handleSubmit}
+            disabled={loading}
             className="w-[800px] bg-blue-600 mt-5 mb-10 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none"
+            
         >
-            สร้างบัญชี
+         {loading ? 'Registering...' : 'สร้างบัญชี'}
         </button>
         </div>
     </div>
